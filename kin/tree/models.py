@@ -42,7 +42,7 @@ class Kin(models.Model):
         blank=True,
         null=True
     )
-    is_deceased = models.BooleanField(
+    deceased = models.BooleanField(
         default=False
     )
     yod = models.SmallIntegerField(
@@ -64,9 +64,15 @@ class Kin(models.Model):
         null=True
     )
 
+    class Meta:
+        default_related_name = 'kin'
+        get_latest_by = ['yob', 'mob', 'dob']
+        ordering = ['-yob', '-mob', '-dob']
+        verbose_name_plural = 'kin'
+
     @property
     def age(self):
-        if not self.is_deceased:
+        if not self.deceased:
             now = dt.datetime.utcnow()
             if self.mob and (self.mob < now.month
                              or (self.dob and self.dob < now.day)):
