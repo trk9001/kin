@@ -35,6 +35,24 @@ class Kin(models.Model):
     is_deceased = models.BooleanField(
         default=False
     )
+    yod = models.SmallIntegerField(
+        'year of death',
+        validators=[MaxValueValidator(dt.datetime.utcnow().year)],
+        blank=True,
+        null=True
+    )
+    mod = models.PositiveSmallIntegerField(
+        'month of death',
+        validators=[MinValueValidator(1), MaxValueValidator(12)],
+        blank=True,
+        null=True
+    )
+    dod = models.PositiveSmallIntegerField(
+        'day of death',
+        validators=[MinValueValidator(1), MaxValueValidator(31)],
+        blank=True,
+        null=True
+    )
 
     @property
     def age(self):
