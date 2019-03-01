@@ -1,10 +1,20 @@
 import datetime as dt
 
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import ValidationError
 from django.db import models
 
 
+def max_year_validator(value):
+    """Raises a ValidationError if year is greater than the current year."""
+    if value > dt.datetime.utcnow().year:
+        raise ValidationError(
+            '{} exceeds the current year'
+        )
+
+
 class Kin(models.Model):
+    """Model to represent a single family member."""
     parents = models.ManyToManyField(
         'self',
         blank=True,
@@ -17,7 +27,7 @@ class Kin(models.Model):
     )
     yob = models.SmallIntegerField(
         'year of birth',
-        validators=[MaxValueValidator(dt.datetime.utcnow().year)],
+        validators=[max_year_validator],
         null=True
     )
     mob = models.PositiveSmallIntegerField(
